@@ -32,7 +32,7 @@ class News(BaseModel):
         return f"{self.pk} {self.title}"
 
     class Meta:
-        ordering = ("-created_at",)
+        ordering = ("-created_at", "-updated_at")
         verbose_name = "новость"
         verbose_name_plural = "новости"
 
