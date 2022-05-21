@@ -1,6 +1,8 @@
 from django.db import models
 
 
+NULLABLE = {"blank": True, "null": True}
+
 class BaseModel(models.Model):  # base class should subclass 'django.db.models.Model'
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан", editable=False)
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Обновлён", editable=False)
@@ -39,7 +41,7 @@ class News(BaseModel):
 
 class Courses(BaseModel):
     name = models.CharField(max_length=256, verbose_name="Name")
-    description = models.TextField(verbose_name="Описание", blank=True, null=True)
+    description = models.TextField(verbose_name="Описание", **NULLABLE)
     description_as_markdown = models.BooleanField(verbose_name="As markdown", default=False)
     cost = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Цена", default=0)
     cover = models.CharField(max_length=25, default="no_image.svg", verbose_name="Обложка")
@@ -47,12 +49,16 @@ class Courses(BaseModel):
     def __str__(self) -> str:
         return f"{self.pk} {self.name}"
 
+    class Mena:
+        verbose_name = "курс"
+        verbose_name_plural = "курсы"
+
 
 class Lesson(BaseModel):
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, **NULLABLE)
     num = models.PositiveIntegerField(verbose_name="Lesson number")
     title = models.CharField(max_length=256, verbose_name="Name")
-    description = models.TextField(verbose_name="Описание", blank=True, null=True)
+    description = models.TextField(verbose_name="Описание", **NULLABLE)
     description_as_markdown = models.BooleanField(verbose_name="As markdown", default=False)
 
     def __str__(self) -> str:
@@ -60,6 +66,8 @@ class Lesson(BaseModel):
 
     class Meta:
         ordering = ("course", "num")
+        verbose_name = "урок"
+        verbose_name_plural = "уроки"
 
 
 class CourseTeachers(BaseModel):
@@ -70,5 +78,6 @@ class CourseTeachers(BaseModel):
 
     def __str__(self) -> str:
         return f"{self.pk} {self.name_second} {self.name_first} {self.updated_at}"
+
 
 

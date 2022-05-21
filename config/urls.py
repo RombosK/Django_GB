@@ -23,3 +23,5 @@ urlpatterns = [
     path('home/', include('mainapp.urls', namespace='home')),
 
 ]
+
+
