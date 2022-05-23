@@ -1,7 +1,8 @@
-from django.db import models
+from django.db import models, migrations
 
 
 NULLABLE = {"blank": True, "null": True}
+
 
 class BaseModel(models.Model):  # base class should subclass 'django.db.models.Model'
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан", editable=False)
@@ -18,7 +19,9 @@ class BaseModel(models.Model):  # base class should subclass 'django.db.models.M
 
 class NewsManager(models.Manager):
     def get_queryset(self):
-        return super.get_queryset().filter(deleted=False)
+        return super().get_queryset().filter(deleted=False)
+
+
 
 
 class News(BaseModel):
@@ -77,7 +80,8 @@ class CourseTeachers(BaseModel):
     day_birth = models.DateField(verbose_name="Дата рождения")
 
     def __str__(self) -> str:
-        return f"{self.pk} {self.name_second} {self.name_first} {self.updated_at}"
+        return f"{self.pk} {self.name_second} {self.name_first} {self.created_at}"
+
 
 
 

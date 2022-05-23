@@ -15,7 +15,8 @@
                     <h6 class="card-subtitle mb-2 text-muted">{% now "j/m/Y H:i" %}</h6>
                     <p class="card-text"><a href="{% url 'mainapp:yandex' %}?text=python django и pycharm для начинающих"> Django </a> by
                          <a href="{% url 'mainapp:yandex' %}?text=Анатолий Постолит">Анатолий Постолит</a></p>
-                    <a href="#" class="card-link">Подробнее</a>
+                        <a href="https://gb.ru/events/">Подробнее</a>
+<!--                    <a href="#" class="card-link">Подробнее</a>-->
                 </div>
             </div>
 
@@ -24,8 +25,9 @@
                 <div class="card my-2">
                     <div class="card-body">
                         <h5 class="card-title">{{ news_item.title }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ news_item.date }}</h6>
-                        <p class="card-text">{{ news_item.preview }}</p>
+                        <h6 class="card-title">{{ news_item.preambule }}</h6>
+<!--                        <h6 class="card-subtitle mb-2 text-muted">{{ news_item.date }}</h6>-->
+<!--                        <p class="card-text">{{ news_item.preview }}</p>-->
                         <a href="#" class="card-link">Подробнее</a>
                     </div>
                 </div>
