@@ -40,6 +40,13 @@
         </li>
         {% endif %}
 
+        {% if user.is_superuser %}
+        <a class="dropdown-item" href="{% url 'admin:index' %}"
+            target="_blank">Административный
+            раздел</a>
+        {% endif %}
+
+
     </ul>
     <span><a href="#">🇷🇺</a> <i class="fas fa-grip-lines-vertical"></i> <a href="#">🇬🇧</a></span>
 </div>

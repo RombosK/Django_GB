@@ -1,3 +1,4 @@
+
 from django.db import models, migrations
 
 
@@ -20,8 +21,6 @@ class BaseModel(models.Model):  # base class should subclass 'django.db.models.M
 class NewsManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(deleted=False)
-
-
 
 
 class News(BaseModel):
@@ -52,7 +51,7 @@ class Courses(BaseModel):
     def __str__(self) -> str:
         return f"{self.pk} {self.name}"
 
-    class Mena:
+    class Meta:
         verbose_name = "курс"
         verbose_name_plural = "курсы"
 
@@ -82,7 +81,5 @@ class CourseTeachers(BaseModel):
     def __str__(self) -> str:
         return f"{self.pk} {self.name_second} {self.name_first} {self.created_at}"
 
-
-
-
-
+    class Meta:
+        verbose_name = "CourseTeacher"
