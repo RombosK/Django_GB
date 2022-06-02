@@ -1,5 +1,9 @@
 from datetime import datetime
-from django.views.generic import TemplateView
+
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DetailView, DeleteView
 import json
 from mainapp.models import News
 
@@ -49,46 +53,42 @@ class LoginView(TemplateView):
     template_name = 'mainapp/login.html'
 
 
-class NewsView(TemplateView):
-    template_name = 'mainapp/news.html'
+class NewsListView(ListView):
+    model = News
+    paginate_by = 5
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        # with open('mainapp/some_data.json', 'r') as read_file:
-        #     data = json.load(read_file)
-        # arr = []
-        # for key in data:
-        #     arr.append(data[key])
-        # context_data['object_list'] = arr
-        #
-        # context_data['object_list'] = [
-        #     {
-        #         'title': 'Новость 1',
-        #         'preview': 'Предпросмотр новости...',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость 2',
-        #         'preview': 'Предпросмотр новости...',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость 3',
-        #         'preview': 'Предпросмотр новости...',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость 4',
-        #         'preview': 'Предпросмотр новости...',
-        #         'date': datetime.now()
-        #     }, {
-        #         'title': 'Новость 5',
-        #         'preview': 'Предпросмотр новости...',
-        #         'date': datetime.now()
-        #     }
-        # ]
-        context_data['object_list'] = News.objects.all()
-        return context_data
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=False)
 
 
-class NewsWithPagination(NewsView):
+class NewsDetailView(DetailView):
+    model = News
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(News, pk=self.kwargs.get('pk'), deleted=False)
+
+
+class NewsCreateView(PermissionRequiredMixin, CreateView):
+    model = News
+    fields = '__all__'
+    success_url = reverse_lazy('mainapp:news')
+    permission_required = ('mainapp.add_news',)
+
+
+class NewsUpdateView(PermissionRequiredMixin, UpdateView):
+    model = News
+    fields = '__all__'
+    success_url = reverse_lazy('mainapp:news')
+    permission_required = ('mainapp.change_news',)
+
+
+class NewsDeleteView(PermissionRequiredMixin, DeleteView):
+    model = News
+    success_url = reverse_lazy('mainapp:news')
+    permission_required = ('mainapp.delete_news',)
+
+
+class NewsWithPagination(NewsListView):
 
     def get_context_data(self, page, **kwargs):
         context = super().get_context_data(page=page, **kwargs)

@@ -79,7 +79,7 @@ class CourseTeachers(BaseModel):
     day_birth = models.DateField(verbose_name="Дата рождения")
 
     def __str__(self) -> str:
-        return f"{self.pk} {self.name_second} {self.name_first} {self.created_at}"
+        return f"{self.pk} {self.name_second} {self.name_first}"
 
     class Meta:
         verbose_name = "CourseTeacher"
