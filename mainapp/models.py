@@ -1,6 +1,6 @@
-
+from django.contrib.auth import get_user_model
 from django.db import models, migrations
-
+from config import settings
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -83,3 +83,32 @@ class CourseTeachers(BaseModel):
 
     class Meta:
         verbose_name = "CourseTeacher"
+
+
+class CourseFeedback(BaseModel):
+    RAITING_FIVE = 5
+    RAITING_FOUR = 4
+    RAITING_THREE = 3
+    RAITING_TWO = 2
+    RAITING_ONE = 1
+
+    RATINGS = (
+        (RAITING_FIVE, '⭐⭐⭐⭐⭐'),
+        (RAITING_FOUR, '⭐⭐⭐⭐'),
+        (RAITING_THREE, '⭐⭐⭐'),
+        (RAITING_TWO, '⭐⭐'),
+        (RAITING_ONE, '⭐'),
+    )
+
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, verbose_name='Курс')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+    feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')
+    rating = models.PositiveSmallIntegerField(choices=RATINGS, default=RAITING_FIVE, verbose_name='Рейтинг')
+
+    class Meta:
+        verbose_name = 'Рейтинг'
+        verbose_name_plural = 'Рейтинги'
+
+    def __str__(self):
+        return f'Отзыв о курсе {self.course} от {self.user} '
+

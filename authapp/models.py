@@ -9,7 +9,8 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to="users", **NULLABLE)
 
     class Meta:
-        verbose_name = "пользователь"
-        verbose_name_plural = "пользователи"
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+
 
 

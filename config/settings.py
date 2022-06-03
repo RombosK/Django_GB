@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'social_django',
     'crispy_forms',
     'authapp',
@@ -138,6 +137,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'authapp.User'
 LOGIN_REDIRECT_URL = 'mainapp:home'
 LOGOUT_REDIRECT_URL = 'mainapp:home'
+
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
