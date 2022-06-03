@@ -108,15 +108,6 @@ class DocSitePageView(TemplateView):
     template_name = "mainapp/doc_site.html"
 
 
-class CoursesListView(TemplateView):
-    template_name = "mainapp/courses_list.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(CoursesListView, self).get_context_data(**kwargs)
-        context["objects"] = Courses.objects.all()[:7]
-        return context
-
-
 class CourseDetailView(TemplateView):
     template_name = "mainapp/courses_detail.html"
 
@@ -136,6 +127,15 @@ class CourseDetailView(TemplateView):
                     user=self.request.user
                 )
         return context_data
+
+
+class CoursesListView(TemplateView):
+    template_name = "mainapp/courses_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CoursesListView, self).get_context_data(**kwargs)
+        context["objects"] = Courses.objects.all()[:7]
+        return context
 
 
 class CourseFeedbackFormView(CreateView):
