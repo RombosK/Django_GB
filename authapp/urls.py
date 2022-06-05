@@ -11,3 +11,4 @@ urlpatterns = [
     path('edit/', EditView.as_view(), name='edit'),
 
 ]
+

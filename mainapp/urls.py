@@ -25,4 +25,9 @@ urlpatterns = [
     path('courses/<int:pk>/detail/', views.CourseDetailView.as_view(), name="courses_detail"),
     path('courses/course_feedback/', views.CourseFeedbackFormView.as_view(), name="course_feedback"),
     path('courses/', views.CoursesView.as_view(), name='courses'),
+
+    # Logs
+    path('logs/', views.LogView.as_view(), name='logs_list'),
+    path('logs/download/', views.LogDownloadView.as_view(), name='logs_download'),
 ]
+
