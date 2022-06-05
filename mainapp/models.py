@@ -1,5 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.db import models, migrations
-
+from config import settings
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -20,8 +21,6 @@ class BaseModel(models.Model):  # base class should subclass 'django.db.models.M
 class NewsManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(deleted=False)
-
-
 
 
 class News(BaseModel):
@@ -52,7 +51,7 @@ class Courses(BaseModel):
     def __str__(self) -> str:
         return f"{self.pk} {self.name}"
 
-    class Mena:
+    class Meta:
         verbose_name = "курс"
         verbose_name_plural = "курсы"
 
@@ -80,9 +79,36 @@ class CourseTeachers(BaseModel):
     day_birth = models.DateField(verbose_name="Дата рождения")
 
     def __str__(self) -> str:
-        return f"{self.pk} {self.name_second} {self.name_first} {self.created_at}"
+        return f"{self.pk} {self.name_second} {self.name_first}"
+
+    class Meta:
+        verbose_name = "CourseTeacher"
 
 
+class CourseFeedback(BaseModel):
+    RAITING_FIVE = 5
+    RAITING_FOUR = 4
+    RAITING_THREE = 3
+    RAITING_TWO = 2
+    RAITING_ONE = 1
 
+    RATINGS = (
+        (RAITING_FIVE, '⭐⭐⭐⭐⭐'),
+        (RAITING_FOUR, '⭐⭐⭐⭐'),
+        (RAITING_THREE, '⭐⭐⭐'),
+        (RAITING_TWO, '⭐⭐'),
+        (RAITING_ONE, '⭐'),
+    )
 
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, verbose_name='Курс')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+    feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')
+    rating = models.PositiveSmallIntegerField(choices=RATINGS, default=RAITING_FIVE, verbose_name='Рейтинг')
+
+    class Meta:
+        verbose_name = 'Рейтинг'
+        verbose_name_plural = 'Рейтинги'
+
+    def __str__(self):
+        return f'Отзыв о курсе {self.course} от {self.user} '
 
