@@ -165,13 +165,13 @@ class LogView(UserPassesTestMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        log_lines = []
+        log_slice = []
         with open(settings.LOG_FILE) as log_file:
             for i, line in enumerate(log_file):
                 if i == 1000:
                     break
-                log_lines.insert(0, line)
-            context_data['logs'] = log_lines
+                log_slice.insert(0, line)
+            context_data['logs'] = log_slice
         return context_data
 
 
