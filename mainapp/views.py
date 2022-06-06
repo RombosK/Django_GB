@@ -119,7 +119,13 @@ class CourseDetailView(TemplateView):
         context_data['course_object'] = get_object_or_404(Courses, pk=self.kwargs.get('pk'))
         context_data['lessons'] = Lesson.objects.filter(course=context_data['course_object'])
         context_data['teachers'] = CourseTeachers.objects.filter(course=context_data['course_object'])
-        context_data['feedback_list'] = CourseFeedback.objects.filter(course=context_data['course_object'])
+        feedback_list_key = f"course_feedback{context_data['course_object'].pk}"
+        cached_feedback_list = cache.get(feedback_list_key)
+        if cached_feedback_list is None:
+            context_data['feedback_list'] = CourseFeedback.objects.filter(course=context_data['course_object'])
+            cache.set(feedback_list_key, context_data['feedback_list'], timeout=300)
+        else:
+            context_data['feedback_list'] = cached_feedback_list
 
         if not self.request.user.is_anonymous:
             if not CourseFeedback.objects.filter(
@@ -176,5 +182,3 @@ class LogDownloadView(UserPassesTestMixin, View):
 
     def get(self, *args, **kwargs):
         return FileResponse(open(settings.LOG_FILE, "rb"))
-
-
