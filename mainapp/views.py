@@ -12,6 +12,7 @@ from mainapp.forms import CourseFeedbackForm
 from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
 
 from config import settings
+from django.core.cache import cache
 
 
 class ContactsView(TemplateView):
