@@ -22,6 +22,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("i18n/", include('django.conf.urls.i18n')),
     path('', RedirectView.as_view(url='home/')),
     path('home/', include('mainapp.urls', namespace='home')),
     path('authapp/', include('authapp.urls', namespace='authapp')),
@@ -31,7 +32,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns.append(path("__debug__/", include(debug_toolbar.urls)))
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-

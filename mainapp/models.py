@@ -1,14 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.db import models, migrations
 from config import settings
-
+from django.utils.translation import gettext_lazy as _
 NULLABLE = {"blank": True, "null": True}
 
 
 class BaseModel(models.Model):  # base class should subclass 'django.db.models.Model'
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан", editable=False)
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Обновлён", editable=False)
-    deleted = models.BooleanField(default=False, verbose_name="Удалён")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("created_at"), editable=False)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="_(updated_at)", editable=False)
+    deleted = models.BooleanField(default=False, verbose_name=_("deleted"))
 
     class Meta:
         abstract = True
@@ -27,10 +27,10 @@ class News(BaseModel):
     objects = NewsManager()
     DoesNotExist = models.Manager
 
-    title = models.CharField(max_length=256, verbose_name="Title")
-    preambule = models.CharField(max_length=1024, verbose_name="Вступление")
-    body = models.TextField(blank=True, null=True, verbose_name="Наполнение")
-    body_as_markdown = models.BooleanField(default=False, verbose_name="As markdown")
+    title = models.CharField(max_length=256, verbose_name="title")
+    preambule = models.CharField(max_length=1024, verbose_name=_("preambule"))
+    body = models.TextField(blank=True, null=True, verbose_name=_("body"))
+    body_as_markdown = models.BooleanField(default=False, verbose_name=_("as markdown"))
 
     def __str__(self) -> str:
         return f"{self.pk} {self.title}"
@@ -42,11 +42,11 @@ class News(BaseModel):
 
 
 class Courses(BaseModel):
-    name = models.CharField(max_length=256, verbose_name="Name")
-    description = models.TextField(verbose_name="Описание", **NULLABLE)
-    description_as_markdown = models.BooleanField(verbose_name="As markdown", default=False)
-    cost = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Цена", default=0)
-    cover = models.CharField(max_length=25, default="no_image.svg", verbose_name="Обложка")
+    name = models.CharField(max_length=256, verbose_name=_("name"))
+    description = models.TextField(verbose_name=_("description"), **NULLABLE)
+    description_as_markdown = models.BooleanField(verbose_name=_("as markdown"), default=False)
+    cost = models.DecimalField(max_digits=8, decimal_places=2, verbose_name=_("cost"), default=0)
+    cover = models.CharField(max_length=25, default="no_image.svg", verbose_name=_("cover"))
 
     def __str__(self) -> str:
         return f"{self.pk} {self.name}"
@@ -58,10 +58,10 @@ class Courses(BaseModel):
 
 class Lesson(BaseModel):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE, **NULLABLE)
-    num = models.PositiveIntegerField(verbose_name="Lesson number")
+    num = models.PositiveIntegerField(verbose_name=_("lesson number"))
     title = models.CharField(max_length=256, verbose_name="Name")
-    description = models.TextField(verbose_name="Описание", **NULLABLE)
-    description_as_markdown = models.BooleanField(verbose_name="As markdown", default=False)
+    description = models.TextField(verbose_name=_("description"), **NULLABLE)
+    description_as_markdown = models.BooleanField(verbose_name=_("as markdown"), default=False)
 
     def __str__(self) -> str:
         return f"{self.course.name} | {self.num} | {self.title}"
@@ -74,9 +74,9 @@ class Lesson(BaseModel):
 
 class CourseTeachers(BaseModel):
     course = models.ManyToManyField(Courses)
-    name_first = models.CharField(max_length=128, verbose_name="Имя")
-    name_second = models.CharField(max_length=128, verbose_name="Фамилия")
-    day_birth = models.DateField(verbose_name="Дата рождения")
+    name_first = models.CharField(max_length=128, verbose_name=_("name"))
+    name_second = models.CharField(max_length=128, verbose_name=_("surname"))
+    day_birth = models.DateField(verbose_name=_("day_birth"))
 
     def __str__(self) -> str:
         return f"{self.pk} {self.name_second} {self.name_first}"
@@ -100,10 +100,10 @@ class CourseFeedback(BaseModel):
         (RAITING_ONE, '⭐'),
     )
 
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE, verbose_name='Курс')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
-    feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')
-    rating = models.PositiveSmallIntegerField(choices=RATINGS, default=RAITING_FIVE, verbose_name='Рейтинг')
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, verbose_name=_('course'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('user'))
+    feedback = models.TextField(verbose_name='Отзыв', default=_('empty'))
+    rating = models.PositiveSmallIntegerField(choices=RATINGS, default=RAITING_FIVE, verbose_name=_('rating'))
 
     class Meta:
         verbose_name = 'Рейтинг'
