@@ -1,43 +1,65 @@
 {% with request.resolver_match.url_name as url_name %}
+{% load static i18n %}
 
 
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
         <li class="nav-item ">
             <a class="nav-link {%  if url_name == 'news' %} active {% endif %}"
-               href="{% url 'mainapp:news' %}">Новости</a>
+               href="{% url 'mainapp:news' %}">
+                {% translate "News" %}
+            </a>
         </li>
         <li class="nav-item ">
-            <a class="nav-link {%  if url_name == 'courses' %} active {% endif %}" href="{% url 'mainapp:courses' %}">Курсы</a>
+            <a class="nav-link {%  if url_name == 'courses' %} active {% endif %}"
+               href="{% url 'mainapp:courses' %}">
+                {% translate "Courses" %}
+            </a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="ddProfile" role="button" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
-                Профиль
+                {% translate "Profile" %}
             </a>
             <div class="dropdown-menu" aria-labelledby="ddProfile">
-                <a class="dropdown-item" href="{% url 'authapp:edit' %}">Редактировать профиль</a>
-                <a class="dropdown-item" href="#">Мои курсы</a>
+                <a class="dropdown-item" href="{% url 'authapp:edit' %}">
+                    {% translate "Edit profile" %}
+                </a>
+                <a class="dropdown-item" href="#">
+                    {% translate "My courses" %}
+                </a>
                 <div class="dropdown-divider"></div>
                 {% if user.is_staff %}
-                    <a class="dropdown-item" href="{% url 'admin:index' %}">Модерация</a>
+                    <a class="dropdown-item" href="{% url 'admin:index' %}">
+                       {% translate "Moderation" %}
+                    </a>
                 {% endif %}
                 {% if user.is_superuser %}
-                    <a class="dropdown-item" href="{% url 'admin:index' %}">Административный раздел</a>
-                    <a class="dropdown-item" href="{% url 'mainapp:logs_list' %}">Логи</a>
+                    <a class="dropdown-item" href="{% url 'admin:index' %}">
+                        {% translate "Admin block" %}
+                    </a>
+                    <a class="dropdown-item" href="{% url 'mainapp:logs_list' %}">
+                        {% translate "Logs" %}
+                    </a>
                 {% endif %}
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'authapp:logout' %}">Выход</a>
+                <a class="dropdown-item" href="{% url 'authapp:logout' %}">
+                    {% translate "Exit" %}
+                </a>
             </div>
         </li>
         {% else %}
             <li class="nav-item ">
-                <a class="nav-link" href="{% url 'authapp:login' %}">Вход</a>
+                <a class="nav-link" href="{% url 'authapp:login' %}">
+                    {% translate "Enter" %}
+                </a>
             </li>
         {% endif %}
         <li class="nav-item {%  if url_name == 'contacts' %} active {% endif %}">
-            <a class="nav-link" href="{% url 'mainapp:contacts' %}">Контакты</a>
+            <a class="nav-link" href="{% url 'mainapp:contacts' %}">
+                {% translate "Contacts" %}
+            </a>
         </li>
     </ul>
 <!--    <span><a href="#">🇷🇺</a> <i class="fas fa-grip-lines-vertical"></i> <a href="#">🇬🇧</a></span>-->
