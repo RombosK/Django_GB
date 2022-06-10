@@ -11,3 +11,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         call_command("makemessages", "--locale=ru", "--ignore=virt", "--no-location")
 
+

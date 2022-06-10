@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-10 16:11+0300\n"
+"POT-Creation-Date: 2022-06-10 18:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,8 +85,6 @@ msgstr "рейтинг"
 msgid "News"
 msgstr "Новости"
 
-#, fuzzy
-#| msgid "course"
 msgid "Courses"
 msgstr "Курсы"
 
@@ -96,13 +94,9 @@ msgstr "Профиль"
 msgid "Edit profile"
 msgstr "Редактировать профиль"
 
-#, fuzzy
-#| msgid "course"
 msgid "My courses"
 msgstr "Мои курсы"
 
-#, fuzzy
-#| msgid "description"
 msgid "Moderation"
 msgstr "Модерация"
 
