@@ -165,7 +165,7 @@ class CoursesListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(CoursesListView, self).get_context_data(**kwargs)
-        context['objects'] = Courses.objects.all()[:7]
+        context['objects'] = Courses.objects.all()
 
         return context
 

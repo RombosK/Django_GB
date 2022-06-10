@@ -2,8 +2,8 @@ from django.test import TestCase, Client
 from http import HTTPStatus
 from django.urls import reverse
 
-from braniacLMS.authapp.models import User
-from braniacLMS.mainapp.models import News
+from authapp.models import User
+from mainapp.models import News
 
 
 class TestMainPageSmoke(TestCase):
@@ -25,7 +25,7 @@ class NewsTestCase(TestCase):
 
         User.objects.create_superuser(username='django', password='geekbrains')
         self.client_with_auth = Client()
-        auth_url = reverse('authapp/login')
+        auth_url = reverse('authapp:login')
         self.client_with_auth.post(
             auth_url, {'username': 'django', 'password': 'geekbrains'}
         )
@@ -34,5 +34,15 @@ class NewsTestCase(TestCase):
         url = reverse('mainapp:news')
         result = self.client.get(url)
         self.assertEqual(result.status_code, HTTPStatus.OK)
+
+    def test_failed_open_add_by_anonim(self):
+        url = reverse('mainapp:news_create')
+        result = self.client.get(url)
+        self.assertEqual(result.status_code, HTTPStatus.FOUND)
+
+
+
+
+
 
 
