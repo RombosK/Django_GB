@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from authapp.models import User
 from mainapp.models import News
+from mainapp import models
 
 
 class TestMainPageSmoke(TestCase):
@@ -35,10 +36,18 @@ class NewsTestCase(TestCase):
         result = self.client.get(url)
         self.assertEqual(result.status_code, HTTPStatus.OK)
 
+    def test_open_page_detail(self):
+        news_obj = models.News.objects.first()
+        url = reverse('mainapp:news_detail', args=[news_obj.pk])
+        result = self.client.get(url)
+        self.assertEqual(result.status_code, HTTPStatus.OK)
+
     def test_failed_open_add_by_anonim(self):
         url = reverse('mainapp:news_create')
         result = self.client.get(url)
         self.assertEqual(result.status_code, HTTPStatus.FOUND)
+
+
 
 
 
