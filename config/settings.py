@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+
 from secret_keys import *
+
+# from braniacLMS.secret_keys import SOCIAL_AUTH_GITHUB_KEY, SOCIAL_AUTH_GITHUB_SECRET, SECRET_KEY
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e@fxn*bi#)rga)(kh794ym@%@nflv=&3pc6%63!=sh@_8ny2=%'
+SECRET_KEY # = 'django-insecure-e@fxn*bi#)rga)(kh794ym@%@nflv=&3pc6%63!=sh@_8ny2=%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

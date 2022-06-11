@@ -3,17 +3,14 @@ import logging
 logger = logging.getLogger(__name__)
 # from datetime import datetime
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-from django.core.checks import messages
 from django.http import JsonResponse, FileResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DetailView, DeleteView, View
 # import json
-import mainapp.forms
 from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
 
-import config
 from config import settings
 from django.core.cache import cache
 
@@ -161,6 +158,7 @@ class DocSitePageView(TemplateView):
 
 class CoursesListView(TemplateView):
     template_name = "mainapp/courses_list.html"
+    model = Courses
     paginate_by = 2
 
     def get_context_data(self, **kwargs):
