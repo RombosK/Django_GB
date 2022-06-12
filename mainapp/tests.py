@@ -1,4 +1,7 @@
 from http import HTTPStatus
+from telnetlib import EC
+
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test.utils import override_settings
 from authapp import models
 from django.core import mail as email
@@ -9,8 +12,14 @@ from mainapp.models import News
 from authapp.models import User
 from mainapp.models import Courses
 
-
 # pages_tests
+from config import settings
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as EC
+
+
 class TestMainPageSmoke(TestCase):
 
     def test_page_open(self):
@@ -140,3 +149,96 @@ class CoursesDetailTest(TestCase):
         url = reverse("mainapp:courses_detail", args=[course_obj.pk])
         result = self.client.get(url)
         self.assertEqual(result.status_code, HTTPStatus.OK)
+
+
+# selenium
+
+
+class TestNewsSelenium(StaticLiveServerTestCase):
+
+    def setUp(self):
+        for i in range(1, 5):
+            User.objects.create_superuser(
+                username=f'Random{i}',
+                email=f'Email{i}',
+                age=i,
+                avatar=f'Avatar{i}'
+            )
+        for i in range(10):
+            News.objects.create(
+                title=f'News{i}',
+                preambule=f'Preambule{i}',
+                body=f'Body{i}'
+            )
+        User.objects.create_superuser(username='admin', password='geekbrains')
+        self.client_with_auth = Client()
+        auth_url = reverse('authapp:login')
+        self.client_with_auth.post(
+            auth_url, {'username': 'admin', 'password': 'geekbrains'}
+        )
+        super().setUp()
+        self.selenium = WebDriver(
+            executable_path=settings.SELENIUM_DRIVER_PATH_FF
+        )
+        self.selenium.implicitly_wait(10)
+        # Login
+        self.selenium.get(f"{self.live_server_url}{reverse('authapp:login')}")
+        button_enter = WebDriverWait(self.selenium, 5).until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, '[type="submit"]')
+            )
+        )
+        self.selenium.find_element_by_name("username").send_keys("admin")
+        self.selenium.find_element_by_name("password").send_keys("geekbrains")
+        button_enter.click()
+        # Wait for footer
+        WebDriverWait(self.selenium, 5).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "mt-auto"))
+        )
+
+    def test_create_button_clickable(self):
+
+        path_list = f"{self.live_server_url}{reverse('mainapp:news')}"
+        path_add = reverse("mainapp:news_create")
+
+        self.selenium.get(path_list)
+        button_create = WebDriverWait(self.selenium, 5).until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, f'[href="{path_add}"]')
+            )
+        )
+        print("Trying to click button ...")
+        button_create.click()  # Test that button clickable
+        WebDriverWait(self.selenium, 5).until(
+            EC.visibility_of_element_located((By.ID, "id_title"))
+        )
+        print("Button clickable!")
+
+    # With no element - test will be failed
+    # WebDriverWait(self.selenium, 5).until(
+    # EC.visibility_of_element_located((By.ID, "id_title111"))
+    # )
+    def test_pick_color(self):
+
+        path = f"{self.live_server_url}{reverse('mainapp:home')}"
+        self.selenium.get(path)
+        navbar_el = WebDriverWait(self.selenium, 5).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "navbar"))
+        )
+        try:
+            self.assertEqual(
+                navbar_el.value_of_css_property("background-color"),
+                "rgb(255, 255, 155)",
+            )
+        except AssertionError:
+            with open(
+                    "var/screenshots/001_navbar_el_scrnsht.png", "wb"
+            ) as outf:
+                outf.write(navbar_el.screenshot_as_png)
+        raise
+
+    def tearDown(self):
+
+        # Close browser
+        self.selenium.quit()
+        super().tearDown()
