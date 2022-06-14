@@ -2,6 +2,7 @@ from importlib.resources import _
 
 from django.contrib import admin
 from django.utils.html import format_html
+
 from mainapp.models import News, Courses, Lesson, CourseTeachers
 
 

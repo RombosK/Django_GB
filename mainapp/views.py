@@ -1,26 +1,20 @@
 import logging
 
-logger = logging.getLogger(__name__)
-# from datetime import datetime
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-from django.core.checks import messages
+from django.core.cache import cache
 from django.http import JsonResponse, FileResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DetailView, DeleteView, View
-# import json
 
-import mainapp.forms
-from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
-
-import config
 from config import settings
-from django.core.cache import cache
-
+from mainapp import forms
 from mainapp import tasks
 from mainapp.forms import CourseFeedbackForm
-from mainapp import forms
+from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
+
+logger = logging.getLogger(__name__)
 
 
 class ContactsView(TemplateView):
@@ -59,8 +53,8 @@ class ContactsView(TemplateView):
         return HttpResponseRedirect(reverse_lazy('mainapp:contacts'))
 
 
-class CoursesView(TemplateView):
-    template_name = 'mainapp/courses_list.html'
+# class CoursesView(TemplateView):
+#     template_name = 'mainapp/courses_list.html'
 
 
 class DocSiteView(TemplateView):
@@ -77,7 +71,7 @@ class LoginView(TemplateView):
 
 class NewsListView(ListView):
     model = News
-    paginate_by = 5
+    paginate_by = 2
 
     def get_queryset(self):
         return super().get_queryset().filter(deleted=False)
@@ -110,25 +104,25 @@ class NewsDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = ('mainapp.delete_news',)
 
 
-class NewsWithPagination(NewsListView):
-
-    def get_context_data(self, page, **kwargs):
-        context = super().get_context_data(page=page, **kwargs)
-        context["page_num"] = page
-        return context
+# class NewsWithPagination(NewsListView):
+#
+#     def get_context_data(self, page, **kwargs):
+#         context = super().get_context_data(page=page, **kwargs)
+#         context["page_num"] = page
+#         return context
 
 
 class ContactsPageView(TemplateView):
     template_name = "mainapp/contacts.html"
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(ContactsPageView, self).get_context_data(**kwargs)
-    #     if self.request.user.is_authenticated:
-    #         context["form"] = forms.CourseFeedbackForm(
-    #                 user=self.request.user
-    #             )
-    #     return context
-    #
+    def get_context_data(self, **kwargs):
+        context = super(ContactsPageView, self).get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context["form"] = forms.CourseFeedbackForm(
+                user=self.request.user
+            )
+        return context
+
     # def post(self, *args, **kwargs):
     #     if self.request.user.is_authenticated:
     #         cache_lock_flag = cache.get(
@@ -151,16 +145,25 @@ class ContactsPageView(TemplateView):
     #                 }
     #             )
     #         else:
-    #             messages.add_message(
-    #                 self.request,
-    #                 messages.WARNING,
-    #                 f"You can send only one message per 5 minutes",
-    #             )
+    #             self.message = messages.add_message(self.request, messages.WARNING,
+    #                                                 f"You can send only one message per 5 minutes", )
     #     return HttpResponseRedirect(reverse_lazy("mainapp:contacts"))
 
 
 class DocSitePageView(TemplateView):
     template_name = "mainapp/doc_site.html"
+
+
+class CoursesListView(TemplateView):
+    template_name = "mainapp/courses_list.html"
+    model = Courses
+    paginate_by = 2
+
+    def get_context_data(self, **kwargs):
+        context = super(CoursesListView, self).get_context_data(**kwargs)
+        context['objects'] = Courses.objects.all()
+
+        return context
 
 
 class CourseDetailView(TemplateView):
@@ -187,16 +190,8 @@ class CourseDetailView(TemplateView):
                     course=context_data['course_object'],
                     user=self.request.user
                 )
+
         return context_data
-
-
-class CoursesListView(TemplateView):
-    template_name = "mainapp/courses_list.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(CoursesListView, self).get_context_data(**kwargs)
-        context["objects"] = Courses.objects.all()[:7]
-        return context
 
 
 class CourseFeedbackFormView(CreateView):
@@ -216,15 +211,19 @@ class LogView(UserPassesTestMixin, TemplateView):
         return self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
-        context_data = super(LogView, self).get_context_data(**kwargs)
+
+        context = super(LogView, self).get_context_data(**kwargs)
         log_slice = []
-        with open(settings.LOG_FILE) as log_file:
+        logs_line = 1000  # Заданное кол-во строк последних логов
+        last_line = sum(1 for line in open(settings.LOG_FILE))
+        with open(settings.LOG_FILE, "r") as log_file:
             for i, line in enumerate(log_file):
-                if i == 1000:
-                    break
-                log_slice.insert(0, line)
-            context_data["logs"] = log_slice
-        return context_data
+                cnt = (last_line - logs_line)
+                if i < cnt:
+                    continue
+                log_slice.insert(0, f'{i} {line}')
+            context["logs"] = log_slice
+        return context
 
 
 class LogDownloadView(UserPassesTestMixin, View):

@@ -1,6 +1,6 @@
-{% extends 'authapp/base.html' %}
+{% extends 'mainapp/base.html' %}
 
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags i18n %}
 
 {% block content %}
 
@@ -19,7 +19,7 @@
         {% csrf_token %}
         {{ form|crispy }}
         <button type=" submit" class="btn btn-primary btn-block">
-            Сохранить
+            {% translate 'Save' %}
         </button>
     </form>
 {% endblock %}

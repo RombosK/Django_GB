@@ -1,11 +1,10 @@
-
-
 {% extends 'mainapp/base.html' %}
 
 {% load static crispy_forms_tags cache %}
 
 {% block title %}
-    {{ course_object.name }} {% endblock title %}
+    {{ course_object.name }}
+{% endblock title %}
 {% block content %}
     <h1 class="mt-2">
     {{ course_object.name }}
