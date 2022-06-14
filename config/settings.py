@@ -9,23 +9,23 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
-
-from secret_keys import *
+from dotenv import load_dotenv
+# from secret_keys import *
 
 # from braniacLMS.secret_keys import SOCIAL_AUTH_GITHUB_KEY, SOCIAL_AUTH_GITHUB_SECRET, SECRET_KEY
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / '.env')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY # = 'django-insecure-e@fxn*bi#)rga)(kh794ym@%@nflv=&3pc6%63!=sh@_8ny2=%'
+SECRET_KEY = 'django-insecure-e@fxn*bi#)rga)(kh794ym@%@nflv=&3pc6%63!=sh@_8ny2=%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.getenv('DEBUG') == 'True' else False
 
 ALLOWED_HOSTS = ['*']
 
@@ -156,8 +156,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GITHUB_KEY
-SOCIAL_AUTH_GITHUB_SECRET
+SOCIAL_AUTH_GITHUB_KEY = '3114b81827fa7e7b5698'
+SOCIAL_AUTH_GITHUB_SECRET = 'b26119d78736eafb03b0b0f07e3745253cf1528e'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOG_FILE = BASE_DIR / "log" / "main_log.log"
