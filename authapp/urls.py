@@ -1,5 +1,6 @@
+from django.urls import path
+
 from authapp.apps import AuthappConfig
-from django.urls import path, include
 from authapp.views import CustomLoginView, RegisterView, CustomLogoutView, EditView
 
 app_name = AuthappConfig.name

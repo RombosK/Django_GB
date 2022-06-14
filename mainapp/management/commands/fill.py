@@ -1,4 +1,5 @@
 from django.core.management import BaseCommand
+
 from mainapp.models import News
 
 

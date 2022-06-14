@@ -1,22 +1,20 @@
 import logging
 
-logger = logging.getLogger(__name__)
-# from datetime import datetime
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.core.cache import cache
 from django.http import JsonResponse, FileResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DetailView, DeleteView, View
-# import json
-from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
 
 from config import settings
-from django.core.cache import cache
-
+from mainapp import forms
 from mainapp import tasks
 from mainapp.forms import CourseFeedbackForm
-from mainapp import forms
+from mainapp.models import News, Courses, Lesson, CourseTeachers, CourseFeedback
+
+logger = logging.getLogger(__name__)
 
 
 class ContactsView(TemplateView):

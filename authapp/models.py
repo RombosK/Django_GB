@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from mainapp.models import NULLABLE
 from django.utils.translation import gettext_lazy as _
+
+from mainapp.models import NULLABLE
 
 
 class User(AbstractUser):

@@ -1,23 +1,23 @@
 from http import HTTPStatus
 from telnetlib import EC
-
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test.utils import override_settings
-from authapp import models
 from django.core import mail as email
 from django.test import TestCase, Client
+from django.test.utils import override_settings
 from django.urls import reverse
-from mainapp import tasks
-from mainapp.models import News
-from authapp.models import User
-from mainapp.models import Courses
-
-# pages_tests
-from config import settings
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+import mainapp
+from authapp import models
+from authapp.models import User
+# pages_tests
+from config import settings
+from mainapp import tasks
+from mainapp.models import Courses
+from mainapp.models import News
 
 
 class TestMainPageSmoke(TestCase):
@@ -50,7 +50,7 @@ class NewsTestCase(TestCase):
         self.assertEqual(result.status_code, HTTPStatus.OK)
 
     def test_open_page_detail(self):
-        news_obj = models.News.objects.first()
+        news_obj = mainapp.models.News.objects.first()
         url = reverse('mainapp:news_detail', args=[news_obj.pk])
         result = self.client.get(url)
         self.assertEqual(result.status_code, HTTPStatus.OK)
@@ -77,17 +77,17 @@ class NewsTestCase(TestCase):
             },
         )
 
-        self.assertGreater(models.News.objects.count(), counter_before)
+        self.assertGreater(mainapp.models.News.objects.count(), counter_before)
 
     def test_page_open_update_deny_access(self):
-        news_obj = models.News.objects.first()
+        news_obj = mainapp.models.News.objects.first()
         url = reverse("mainapp:news_update", args=[news_obj.pk])
         result = self.client.get(url)
         self.assertEqual(result.status_code, HTTPStatus.FOUND)
 
     def test_update_in_web(self):
         new_title = "NewTestTitle001"
-        news_obj = models.News.objects.first()
+        news_obj = mainapp.models.News.objects.first()
         self.assertNotEqual(news_obj.title, new_title)
         path = reverse("mainapp:news_update", args=[news_obj.pk])
         result = self.client_with_auth.post(
@@ -103,7 +103,7 @@ class NewsTestCase(TestCase):
         self.assertEqual(news_obj.title, new_title)
 
     def test_delete_in_web(self):
-        news_obj = models.News.objects.first()
+        news_obj = mainapp.models.News.objects.first()
         path = reverse("mainapp:news_delete", args=[news_obj.pk])
         self.client_with_auth.post(path)
         news_obj.refresh_from_db()

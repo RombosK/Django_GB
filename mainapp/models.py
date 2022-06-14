@@ -1,7 +1,7 @@
-from django.contrib.auth import get_user_model
-from django.db import models, migrations
-from config import settings
+from django.conf import settings
+from django.db import models
 from django.utils.translation import gettext_lazy as _
+
 NULLABLE = {"blank": True, "null": True}
 
 
