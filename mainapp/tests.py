@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from telnetlib import EC
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.core import mail as email
 from django.test import TestCase, Client
@@ -18,6 +19,7 @@ from config import settings
 from mainapp import tasks
 from mainapp.models import Courses
 from mainapp.models import News
+from mainapp import models
 
 
 class TestMainPageSmoke(TestCase):
