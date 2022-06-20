@@ -1,4 +1,4 @@
-from importlib.resources import _
+# from importlib.resources import _
 
 from django.contrib import admin
 from django.utils.html import format_html
@@ -23,7 +23,7 @@ class NewsAdmin(admin.ModelAdmin):
     def mark_deleted(self, request, queryset):
         queryset.update(deleted=True)
 
-    mark_deleted.short_description = _('Пометить как удалённые')
+    mark_deleted.short_description = 'Пометить как удалённые'
 
     def slug(self, obj):
         return format_html(
